@@ -68,14 +68,40 @@ Keep context minimal. Don't pass entire codebase to every agent.
 
 ## Conflict Resolution
 
-If two BUILD agents need the same file:
-1. Change plan detects overlap.
-2. Assign one agent as owner of the shared file.
-3. Other agent works on its files, passes requirements for the shared file to the owner.
+"Assign an owner and have the other agent pass along requirements" is not a full mechanism on its own — it doesn't say what the owner does with conflicting requirements, or what happens when they arrive at different times relative to the owner's own edits. Use this protocol instead:
+
+### Step 1 — Detect overlap before spawning, not after
+
+`skills/build/change-plan/` already declares which files each component/ticket touches before BUILD starts. Compute the overlap up front: any file appearing in more than one agent's declared scope is a **shared file**. Everything else is exclusive — those agents just write directly, no coordination needed.
+
+### Step 2 — Exclusive files: no coordination
+
+Agents write their exclusive files freely and in parallel. This is the common case (vertical-slice tickets from `skills/build/ticket-decomposition/` are specifically designed to minimize shared files) and needs nothing beyond normal parallel dispatch.
+
+### Step 3 — Shared files: patch-request, not direct write
+
+For each shared file, agents do **not** write to it directly. Instead, each agent that needs a change to that file produces a **patch request**: a structured description of the change it needs (what to add/modify, and why), not a full rewritten file. This avoids agents overwriting each other's in-flight edits, since none of them ever touches the shared file themselves.
+
+### Step 4 — Serialize application in dependency order
+
+One actor (the orchestrator, or a designated owner agent) applies patch requests to each shared file **one at a time**, re-reading the file's current state immediately before each application — never applying against a stale copy. Order is determined by the same blocking-edge information `ticket-decomposition` already computes: if ticket A blocks ticket B, A's patch request to a shared file applies first.
+
+If there's no dependency ordering between the agents involved (fully parallel, no blocking edge), order by declaration sequence and apply first-come — but always re-read before applying, not just first-come at request time.
+
+### Step 5 — Re-verify the merged result
+
+After all patch requests are applied to a shared file, run `skills/build/anti-patterns/` and `skills/build/constraints/` against that file again. Individually-reasonable patches can combine into a problem no single agent could see — e.g. two agents both registering a route under the same path. Catch this at the merge point, not later in PROVE.
+
+### Step 6 — Escalate irreconcilable conflicts, never silently pick one
+
+If two patch requests to the same file genuinely conflict (not just adjacent changes, but contradictory ones — e.g. different agents expect the same exported function to return different shapes), do not silently choose one. Surface it: state both requests, what each depends on it for, and ask which should win. This mirrors the ADR-conflict handling rule in `skills/think/arch-analyzer/` — tension gets surfaced, never silently resolved by whichever agent happened to run first.
 
 ## Agent Tool Usage
 
 **Claude Code**: use the `Agent` tool with scoped prompts for each sub-agent.
-**Codex**: use built-in multi-agent capabilities.
+
+**Codex**: Codex CLI supports real subagent spawning — define agent roles (model, instructions, sandbox mode, MCP servers per role) in `config.toml`, then either let Codex decide when to spawn automatically or request it explicitly ("spawn one agent for security risks, one for test gaps, one for maintainability"). Codex handles spawn, wait, and result consolidation itself. For batch-style parallel work across many similar items, `spawn_agents_on_csv` fans out one agent per row. Map Reins's phase split onto this: define a `think`, `build`, and `prove` agent role in `config.toml` (or reuse per-skill roles — e.g. a `security-check` role, an `arch-analyzer` role) with instructions pointing at the matching `skills/*/SKILL.md` file, then request the spawn explicitly at each phase boundary rather than relying on Codex to infer Reins's specific pipeline structure on its own.
+
 **OpenCode**: see `subagent-patterns/SKILL.md` for sequential simulation.
+
 **Cursor**: single-agent only. Run phases sequentially.
