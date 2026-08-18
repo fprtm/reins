@@ -121,7 +121,7 @@ Most tasks don't need the whole chain. In practice:
 
 ### Multi-Agent
 - **Multi-agent orchestration** — Parallelize THINK/BUILD/PROVE phases
-- **Multi-model routing** — Cheap models for lint, strong models for architecture (40-60% token savings)
+- **Multi-model routing** — Cheap models for lint, strong models for architecture (theoretical 40-60% token savings — unverified, see `skills/agents/model-strategy/`)
 - **Subagent patterns** — Sequential sub-agent spawning for single-agent environments
 
 ### Project Intelligence

@@ -2,6 +2,21 @@
 
 How to split Reins work across multiple agents for speed and quality.
 
+## Cost-Benefit Gate — Check This Before Spawning Anything
+
+Spawning agents has real cost: spin-up overhead, duplicated context across agents, and merge overhead when results come back. For small tasks this cost exceeds the benefit. **Don't parallelize by default — gate on task size first.**
+
+| Task size | Parallelize THINK? | Parallelize BUILD (by component)? | Parallelize PROVE? |
+|-----------|--------------------|-----------------------------------|---------------------|
+| micro | No — single agent, skip THINK almost entirely anyway | No | No — skip most of PROVE too |
+| small | No — THINK is already light; parallelizing 2-3 quick lookups costs more than it saves | No — single component, nothing to split | Optional — only if PROVE layers are all running anyway (verification+lint are usually near-free to run together) |
+| medium | Yes, if 3+ independent THINK skills apply | Only if there are genuinely independent components (rare at this size) | Yes — 4 layers, real parallel benefit |
+| large | Yes | Yes, per independently-workable component (see `skills/build/ticket-decomposition/`) | Yes |
+
+**Rule of thumb**: if the "work" a sub-agent would do is smaller than the cost of spinning it up and passing it context, run it inline instead. Parallel dispatch is a tool for tasks big enough to absorb the overhead — not a default posture.
+
+**No hard cap is enforced here** — if BUILD-phase component splitting for a `large` task would spawn more than ~5-6 parallel agents, treat that as a signal the ticket decomposition was too fine-grained, and re-consolidate rather than spawning everything at once.
+
 ## Parallelization Rules
 
 ```

@@ -34,13 +34,15 @@ Each constraint rule is tagged:
 - `CHECK: mechanical` → route to CHEAP tier
 - `CHECK: judgment` → route to STRONG tier
 
-## Estimated Savings
+## Estimated Savings — Unverified
 
-Running everything on STRONG tier costs 100%. With routing:
-- ~40% of sub-tasks → CHEAP (saves ~35% cost)
-- ~40% of sub-tasks → MID (saves ~15% cost)
-- ~20% of sub-tasks → STRONG (no savings)
-- **Total: ~40-60% token cost reduction**
+The routing table above implies a rough estimate:
+- ~40% of sub-tasks → CHEAP
+- ~40% of sub-tasks → MID
+- ~20% of sub-tasks → STRONG
+- **Theoretical range: ~40-60% token cost reduction vs. running everything on STRONG tier**
+
+**This number has not been measured in any real run.** It's a plausible estimate from the tier categorization, not a validated result. Treat it as a hypothesis, not a claim. If `/reins:measure` accumulates enough real routing data over time, replace this section with actual observed numbers instead of the estimate.
 
 ## Single-Model Fallback
 
