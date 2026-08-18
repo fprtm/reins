@@ -89,7 +89,7 @@ echo ""
 # --- Check 2: All SKILL.md files have a title (# heading) ---
 echo "## Checking skill titles..."
 
-find "$SKILLS_DIR" -name "SKILL.md" | sort | while read -r file; do
+while IFS= read -r file; do
   relative="${file#$SKILLS_DIR/}"
   first_line=$(head -1 "$file")
   if [[ "$first_line" == "---" ]]; then
@@ -101,7 +101,7 @@ find "$SKILLS_DIR" -name "SKILL.md" | sort | while read -r file; do
   elif [[ "$first_line" != "# "* ]]; then
     log_error "$relative: Missing title (first line should be '# Title' or YAML frontmatter)"
   fi
-done
+done < <(find "$SKILLS_DIR" -name "SKILL.md" | sort)
 
 echo ""
 
@@ -131,14 +131,15 @@ echo "## Checking plugin.json skills array..."
 PLUGIN_JSON="$SCRIPT_DIR/.claude-plugin/plugin.json"
 if [ -f "$PLUGIN_JSON" ]; then
   if grep -q '"skills"' "$PLUGIN_JSON"; then
-    grep -oE '"\./skills/[a-z/-]+"' "$PLUGIN_JSON" | tr -d '"' | while read -r ref; do
+    while IFS= read -r ref; do
+      [ -z "$ref" ] && continue
       ref_path="$SCRIPT_DIR/${ref#./}"
       if [ ! -f "$ref_path/SKILL.md" ]; then
         log_error "plugin.json references '$ref' but $ref_path/SKILL.md does not exist"
       else
         log_ok "plugin.json: $ref resolves"
       fi
-    done
+    done < <(grep -oE '"\./skills/[a-z/-]+"' "$PLUGIN_JSON" | tr -d '"' || true)
   else
     log_warn "plugin.json has no 'skills' array — no skills are registered as invocable"
   fi
@@ -198,7 +199,7 @@ echo ""
 # --- Check 5: Cross-references ---
 echo "## Checking cross-references..."
 
-find "$SKILLS_DIR" -name "SKILL.md" | while read -r file; do
+while IFS= read -r file; do
   relative="${file#$SKILLS_DIR/}"
   # Check for references to skill paths
   refs=$(grep -oE 'skills/[a-z-]+/[a-z-]+/' "$file" 2>/dev/null || true)
@@ -209,14 +210,14 @@ find "$SKILLS_DIR" -name "SKILL.md" | while read -r file; do
       log_warn "$relative: references non-existent path '$ref'"
     fi
   done <<< "$refs"
-done
+done < <(find "$SKILLS_DIR" -name "SKILL.md")
 
 echo ""
 
 # --- Check 6: File sizes ---
 echo "## Checking skill file sizes..."
 
-find "$SKILLS_DIR" -name "SKILL.md" | while read -r file; do
+while IFS= read -r file; do
   relative="${file#$SKILLS_DIR/}"
   lines=$(wc -l < "$file")
   if [ "$lines" -gt 300 ]; then
@@ -224,7 +225,7 @@ find "$SKILLS_DIR" -name "SKILL.md" | while read -r file; do
   elif [ "$lines" -lt 5 ]; then
     log_error "$relative: only $lines lines (likely incomplete)"
   fi
-done
+done < <(find "$SKILLS_DIR" -name "SKILL.md")
 
 echo ""
 
