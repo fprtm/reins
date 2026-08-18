@@ -154,39 +154,14 @@ docs/reins/
 
 ## Install
 
-```bash
-# Full install
-./install/install.sh --agent claude
-./install/install.sh --agent codex
-./install/install.sh --agent opencode
-./install/install.sh --agent cursor
-./install/install.sh --agent generic --dest <dir>
+Fastest path, inside Claude Code:
 
-# Modular install (only what you need)
-./install/install.sh --agent claude --only security     # constraints + prove
-./install/install.sh --agent claude --only think,build   # think + build phases
-./install/install.sh --agent claude --only quality       # build + prove
-
-# With enforcement
-./install/install.sh --agent claude --with-hooks --with-ci
-
-# With project templates
-./install/install.sh --agent claude --with-templates
-
-# Update existing installation
-./install/install.sh --agent claude --update
-
-# Uninstall
-./install/install.sh --agent claude --uninstall
-
-# Check version
-./install/install.sh --version
-```
-
-Or install as Claude Code plugin:
 ```
 /plugin marketplace add fprtm/reins
+/plugin install reins
 ```
+
+For Codex/OpenCode/Cursor, project-scoped installs, partial installs (`--only`), enforcement hooks, CI, updating, or uninstalling — see **[docs/INSTALL.md](docs/INSTALL.md)** for the full guide, including a troubleshooting section.
 
 ## Project Configuration
 
