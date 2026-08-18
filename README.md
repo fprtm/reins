@@ -69,6 +69,26 @@ Most of the time Reins works invisibly — the orchestrator auto-detects mode/si
 
 Each command is a thin, manual-only entry point (`disable-model-invocation: true`) into the underlying skill(s) — the orchestrator still auto-triggers the same skills as part of the normal pipeline. Use the commands when you want to invoke a specific phase directly; let the orchestrator run when you just want to work normally.
 
+### Usage Order
+
+```
+/reins:discover  →  /reins:design  →  /reins:decompose  →  /reins:implement  →  /reins:verify
+   (optional)         (optional)       (optional, large        (usually auto-           (after
+                                        tasks only)             triggered)              implement)
+
+/reins:audit and /reins:measure stand alone — call anytime, unrelated to the sequence above.
+```
+
+Most tasks don't need the whole chain. In practice:
+
+- **Small/medium task** — skip straight to `/reins:implement`, or don't call any command at all and let the orchestrator handle it.
+- **Task needing an architecture or spec decision** — `/reins:design` → `/reins:implement` → `/reins:verify`. Skip `discover` if the direction is already clear; skip `decompose` if it's not large enough to need splitting.
+- **Large or ambiguous task** — the full chain: `/reins:discover` (settle direction) → `/reins:design` (spec + architecture) → `/reins:decompose` (split into tickets) → `/reins:implement` per ticket → `/reins:verify` per ticket.
+- **`/reins:audit`** — anytime, independent of what you're currently working on. Codebase health check.
+- **`/reins:measure`** — anytime. See what Reins has actually caught.
+
+`design` and `decompose` answer different questions and are usually invoked separately rather than together: `design` decides *what the solution looks like* (architecture, spec) and is used for almost any non-trivial task; `decompose` decides *how to cut the work into pieces* and is only relevant once a task is genuinely too large for one pass.
+
 ## Features
 
 ### Core Pipeline
