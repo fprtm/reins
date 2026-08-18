@@ -67,6 +67,13 @@ EXPECTED_SKILLS=(
   "agents/orchestration/SKILL.md"
   "agents/model-strategy/SKILL.md"
   "agents/subagent-patterns/SKILL.md"
+  "commands/discover/SKILL.md"
+  "commands/decompose/SKILL.md"
+  "commands/design/SKILL.md"
+  "commands/implement/SKILL.md"
+  "commands/verify/SKILL.md"
+  "commands/audit/SKILL.md"
+  "commands/measure/SKILL.md"
 )
 
 for skill in "${EXPECTED_SKILLS[@]}"; do
@@ -84,13 +91,58 @@ echo "## Checking skill titles..."
 
 find "$SKILLS_DIR" -name "SKILL.md" | sort | while read -r file; do
   relative="${file#$SKILLS_DIR/}"
-  title=$(head -1 "$file")
-  if [[ "$title" != "# "* ]]; then
-    log_error "$relative: Missing title (first line should be '# Title')"
+  first_line=$(head -1 "$file")
+  if [[ "$first_line" == "---" ]]; then
+    # Has frontmatter — find the title after the closing ---
+    title=$(awk '/^---$/{c++; next} c>=2 && /^# /{print; exit}' "$file")
+    if [[ -z "$title" ]]; then
+      log_error "$relative: Has frontmatter but no '# Title' heading after it"
+    fi
+  elif [[ "$first_line" != "# "* ]]; then
+    log_error "$relative: Missing title (first line should be '# Title' or YAML frontmatter)"
   fi
 done
 
 echo ""
+
+# --- Check 2b: Command skills have valid frontmatter ---
+echo "## Checking command skill frontmatter..."
+
+for cmd in discover decompose design implement verify audit measure; do
+  file="$SKILLS_DIR/commands/$cmd/SKILL.md"
+  if [ -f "$file" ]; then
+    if ! head -1 "$file" | grep -q "^---$"; then
+      log_error "commands/$cmd: missing YAML frontmatter"
+    elif ! grep -q "^name: $cmd$" "$file"; then
+      log_error "commands/$cmd: frontmatter 'name' does not match '$cmd'"
+    elif ! grep -q "^description:" "$file"; then
+      log_error "commands/$cmd: frontmatter missing 'description'"
+    else
+      log_ok "commands/$cmd: valid frontmatter"
+    fi
+  fi
+done
+
+echo ""
+
+# --- Check 2c: plugin.json skills array references valid paths ---
+echo "## Checking plugin.json skills array..."
+
+PLUGIN_JSON="$SCRIPT_DIR/.claude-plugin/plugin.json"
+if [ -f "$PLUGIN_JSON" ]; then
+  if grep -q '"skills"' "$PLUGIN_JSON"; then
+    grep -oE '"\./skills/[a-z/-]+"' "$PLUGIN_JSON" | tr -d '"' | while read -r ref; do
+      ref_path="$SCRIPT_DIR/${ref#./}"
+      if [ ! -f "$ref_path/SKILL.md" ]; then
+        log_error "plugin.json references '$ref' but $ref_path/SKILL.md does not exist"
+      else
+        log_ok "plugin.json: $ref resolves"
+      fi
+    done
+  else
+    log_warn "plugin.json has no 'skills' array — no skills are registered as invocable"
+  fi
+fi
 
 # --- Check 3: Mode files have behavior tables ---
 echo "## Checking mode files have behavior tables..."

@@ -22,7 +22,7 @@ Targets:
 Options:
   --dest <dir>       Destination directory (required for generic, optional for others)
   --only <phase>     Install only specific phase(s). Comma-separated.
-                     Phases: think, build, prove, meta, modes, constraints, agents
+                     Phases: think, build, prove, meta, modes, constraints, agents, commands
                      Shortcuts: security (constraints+prove), quality (build+prove)
   --with-hooks       Install pre-commit hooks to current git repo
   --with-ci          Copy GitHub Actions workflow to .github/workflows/
@@ -57,7 +57,7 @@ copy_phase() {
   local phase="$2"
 
   case "$phase" in
-    think|build|prove|meta|modes|constraints|agents)
+    think|build|prove|meta|modes|constraints|agents|commands)
       if [ -d "$SKILLS_DIR/$phase" ]; then
         mkdir -p "$dest/$phase"
         cp -r "$SKILLS_DIR/$phase"/* "$dest/$phase/"

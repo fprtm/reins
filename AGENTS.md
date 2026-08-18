@@ -32,6 +32,10 @@ Reins controls AI coding agents through three phases:
 8. Generate report, log decisions (rule-of-three gated), update glossary, record stats, update index
 ```
 
+## Slash Commands
+
+Direct access to one phase without full auto-detection: `/reins:discover` (requirements interview), `/reins:decompose` (planning/tickets), `/reins:design` (architecture/spec), `/reins:implement` (coding with guardrails), `/reins:verify` (QA), `/reins:audit` (codebase health scan), `/reins:measure` (impact dashboard). Each is manual-only (`disable-model-invocation: true`) — the orchestrator still auto-triggers the same underlying skills as part of the normal pipeline.
+
 ## Reins Grill vs Plain Discussion
 
 Not every conversation triggers Reins. Pure brainstorming with no execution intent is normal chat — skip the pipeline entirely. **Reins Grill** is different: it's the THINK-phase tool for when a decision is about to be made (explicit request, or auto-suggested before an execution signal locks in an architecture/scope choice). See `skills/think/grill/SKILL.md`.
@@ -68,3 +72,4 @@ All Reins skills are in the `skills/` directory, organized by phase:
 - `skills/modes/` — prototype, vibe, standard, strict, emergency
 - `skills/constraints/` — universal, web, cli, mobile, library, api
 - `skills/agents/` — orchestration, model-strategy, subagent-patterns
+- `skills/commands/` — the 7 standalone slash-command entry points (discover, decompose, design, implement, verify, audit, measure)

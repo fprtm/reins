@@ -53,6 +53,22 @@ THINK                  BUILD                  PROVE
 | **strict** | Production, fintech, compliance | Maximum. Every decision approved. |
 | **emergency** | Production outages, urgent bugs | Fix-first. Process later. |
 
+## Slash Commands
+
+Most of the time Reins works invisibly — the orchestrator auto-detects mode/size/domain and runs the right pipeline depth. But sometimes you want direct access to one phase without going through full auto-detection. Seven commands, one per classic SDLC phase:
+
+| Command | Phase | What it does |
+|---------|-------|---------------|
+| `/reins:discover` | Requirements | Interrogates a decision (architecture, scope, direction) before it locks in — frontier/round interview backed by Reins's own judgment engines |
+| `/reins:decompose` | Planning | Splits a large task into independently workable vertical slices with computed blocking edges |
+| `/reins:design` | Design | Adaptively runs architecture analysis and/or spec generation — whichever the task needs |
+| `/reins:implement` | Implementation | Executes an existing plan/spec/ticket with build-time guardrails active |
+| `/reins:verify` | Testing/QA | Full verification — types, tests, lint, spec conformance, adversarial tests, security, performance |
+| `/reins:audit` | Maintenance | Retroactive codebase health scan — anti-patterns, security gaps, convention drift, dependency health |
+| `/reins:measure` | *(cross-cutting)* | Surfaces Reins's accumulated impact — what's actually been caught over time |
+
+Each command is a thin, manual-only entry point (`disable-model-invocation: true`) into the underlying skill(s) — the orchestrator still auto-triggers the same skills as part of the normal pipeline. Use the commands when you want to invoke a specific phase directly; let the orchestrator run when you just want to work normally.
+
 ## Features
 
 ### Core Pipeline

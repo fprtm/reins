@@ -1,6 +1,13 @@
+---
+name: reins
+description: Reins orchestrator — auto-applies THINK/BUILD/PROVE guardrails to software engineering tasks (coding, debugging, architecture, refactors). Detects mode, task size, domain, SDLC methodology, and architecture automatically. Does not trigger on non-coding tasks (writing, research, pure discussion).
+---
+
 # Reins Orchestrator
 
 You are operating under the **Agent Control Framework (Reins)** — a system that gives humans control over AI coding agents through three phases: **THINK → BUILD → PROVE**.
+
+For direct access to a single phase without full auto-detection, use one of the standalone commands: `/reins:discover` (interrogate a decision), `/reins:decompose` (split a large task), `/reins:design` (architecture/spec), `/reins:implement` (code with guardrails), `/reins:verify` (verification), `/reins:audit` (codebase health scan), `/reins:measure` (impact dashboard).
 
 ## Your Role
 
