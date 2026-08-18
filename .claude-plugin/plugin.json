@@ -1,0 +1,6 @@
+{
+  "name": "reins",
+  "version": "0.3.0",
+  "description": "Reins — Agent Control Framework. THINK, BUILD, PROVE. Multi-agent guardrails with SDLC awareness, architecture analysis, Reins Grill for pre-lock-in decisions, adaptive doc generation, and enforcement hooks.",
+  "homepage": "https://github.com/fprtm/reins"
+}

@@ -1,0 +1,5 @@
+{
+  "name": "reins",
+  "owner": "ferryaguspratama",
+  "description": "Reins — Agent Control Framework. THINK, BUILD, PROVE. Multi-agent guardrails for AI coding agents. 5 modes, SDLC awareness, architecture analysis with deletion-test heuristics, Reins Grill for pre-execution brainstorming, rule-of-three decision logging, domain glossary, vertical-slice ticket decomposition, adaptive doc generation (FSD/SDD/PRD/ERD/DoD), pre-commit hooks, CI integration, multi-model routing, stats tracking."
+}
