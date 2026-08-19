@@ -46,6 +46,7 @@ EXPECTED_SKILLS=(
   "prove/security-check/SKILL.md"
   "prove/performance-check/SKILL.md"
   "prove/report/SKILL.md"
+  "prove/judgment/SKILL.md"
   "meta/decision-log/SKILL.md"
   "meta/comprehension/SKILL.md"
   "meta/insight/SKILL.md"
@@ -260,7 +261,7 @@ echo ""
 # --- Check 8: Templates ---
 echo "## Checking templates..."
 
-for file in templates/reins.config.md templates/decisions.md templates/memory.md templates/index.md templates/glossary.md; do
+for file in templates/reins.config.md templates/decisions.md templates/memory.md templates/index.md templates/glossary.md templates/plan.md; do
   if [ -f "$SCRIPT_DIR/$file" ]; then
     log_ok "$file exists"
   else

@@ -15,7 +15,12 @@ Spawning agents has real cost: spin-up overhead, duplicated context across agent
 
 **Rule of thumb**: if the "work" a sub-agent would do is smaller than the cost of spinning it up and passing it context, run it inline instead. Parallel dispatch is a tool for tasks big enough to absorb the overhead — not a default posture.
 
-**No hard cap is enforced here** — if BUILD-phase component splitting for a `large` task would spawn more than ~5-6 parallel agents, treat that as a signal the ticket decomposition was too fine-grained, and re-consolidate rather than spawning everything at once.
+**Hard cap: 6 parallel agents.** If a dispatch plan would spawn more than 6 agents at once, STOP and do not spawn. Two reasons, and both must be told to the user:
+
+1. **Decomposition smell** — needing >6 parallel agents usually means the ticket decomposition was too fine-grained. Re-consolidate first.
+2. **Review capacity** (research-backed, see `skills/prove/judgment/`) — agents generate output far faster than a human can judge it. More parallel agents than the user can review = comprehension debt, not speed.
+
+The cap is overridable — if the user explicitly says "spawn them all anyway", explain the risk (unreviewable output volume, platform session limits may also cut it off) and proceed if they accept. Log the override. Never silently exceed the cap, and never refuse outright when the user insists.
 
 ## Parallelization Rules
 

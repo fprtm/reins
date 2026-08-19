@@ -118,6 +118,10 @@ Most tasks don't need the whole chain. In practice:
 - **Git-history-weighted scoping** — When no direction is given, architecture analysis prioritizes recently-churned files over a uniform full-repo scan.
 - **Visual architecture reports** — Multi-candidate findings render as a self-contained HTML report (Mermaid diagrams, confidence badges: Strong/Worth exploring/Speculative) instead of a markdown wall of text.
 - **Vertical-slice ticket decomposition** — Large tasks split into independently demoable, end-to-end slices with computed blocking edges, worked frontier-first — not sliced by technical layer. Wide/mechanical refactors get the expand→migrate→contract treatment instead.
+- **AI output judgment gate** — Research-grounded (AI code carries ~1.7x more defects and a documented "false sense of security" effect): every judged report names its weakest point and hallucination-risk zones, security-sensitive AI output is escalated for human eyes even when checks pass, and generation is throttled to review capacity so comprehension debt doesn't pile up.
+- **Council / devil's advocate** — Consequential decisions get a final pass from fixed adversarial seats (devil's advocate, maintainer-a-year-later, security, cost, end-user) before closing — objections either reshape the decision or get an explicit logged acceptance.
+- **Session persistence** — Once Reins activates in a session it stays active for every subsequent coding task; detected context and answered questions carry forward instead of being re-asked.
+- **Numbered design docs** — FSD/SDD/PRD/ERD/DoD files carry sequence prefixes (`003-payment-refund-fsd.md`), one doc per feature — no more single ever-growing file per doc type. Every FSD/SDD includes a compact Mermaid diagram.
 
 ### Multi-Agent
 - **Multi-agent orchestration** — Parallelize THINK/BUILD/PROVE phases

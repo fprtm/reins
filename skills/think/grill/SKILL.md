@@ -50,6 +50,31 @@ Generic grilling gives recommendations from general reasoning. Reins Grill route
 
 This means the `➡️` recommendation isn't "what sounds reasonable" — it's "what Reins's own rule for this exact category says," so the recommendation stays consistent whether it comes from Grill, the plan file, or a later constraint check.
 
+## Be Critical — Grilling Is Not Polite Questioning
+
+A grill session that only asks clarifying questions is an intake form, not a grill. The stance is adversarial-but-constructive:
+
+1. **Challenge the premise before refining it.** Before asking "how should we build X", ask whether X is the right thing at all: "You said microservices — what problem do you have that a monolith can't solve? Name it." If the user can't name it, that IS the finding.
+2. **Every stated requirement gets one "why" or one counter-example.** Not endlessly — once per requirement. "You want real-time sync. What breaks if it's 5 seconds stale?" A requirement that survives one honest counter-question is much more trustworthy than one that was never poked.
+3. **Attack the recommendation too — including your own.** After giving a `➡️` recommendation, name the strongest argument *against* it in one line. If you can't produce a real counter-argument, you haven't thought about it enough to recommend it.
+4. **"I don't know" from the user is data, not a dead end.** It marks a branch the user hasn't thought through — that branch gets a deeper round, not a default answer quietly filled in.
+
+## Council — Devil's Advocate for Consequential Decisions
+
+For decisions that pass the rule-of-three bar (hard to reverse + surprising + real trade-off), a single line of questioning isn't enough. Before closing the session, run a **council pass**: examine the near-final decision from these fixed seats, each producing its sharpest objection (one or two lines, not essays):
+
+| Seat | Asks |
+|------|------|
+| **Devil's advocate** | "What is the strongest case that this whole decision is wrong?" — argued sincerely, not as a formality |
+| **Maintainer, 1 year later** | "What will whoever inherits this curse us for?" |
+| **Security** | "What's the attack surface this creates?" |
+| **The bill** | "What does this cost in ongoing complexity/infra/time — and is the problem worth that price?" |
+| **The user of the product** | "Does this actually make the end product better, or is it engineering self-indulgence?" |
+
+Present the objections, let the user respond, then close. If multi-agent dispatch is available and the decision is big enough (see cost-benefit gate in `skills/agents/orchestration/`), the seats can run as parallel sub-agents — each seat gets genuinely independent reasoning instead of one mind role-playing five voices. Single-agent: run them sequentially, honestly.
+
+An objection that lands doesn't kill the decision — it either reshapes it or gets an explicit, logged acceptance ("we accept the maintenance cost because X"). Objections that get no answer at all mean the frontier isn't actually empty.
+
 ## Facts vs Decisions
 
 Finding *facts* (what's in the codebase, what pattern is already in use, how many adapters currently exist) is Reins's job — dispatch a sub-agent to look it up, never ask the user for something the environment already knows. Facts don't block the rest of the round; only questions genuinely downstream of that lookup wait.

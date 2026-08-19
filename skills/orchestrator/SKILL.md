@@ -148,32 +148,7 @@ Before BUILD phase, write plan to `docs/reins/plans/current.md`:
 
 ### Plan Contents
 
-```markdown
-# Plan: [Task Description]
-
-**Date**: [auto]
-**Mode**: [detected mode]
-**Size**: [detected size]
-**SDLC**: [detected methodology]
-**Architecture**: [detected or proposed]
-
-## Scope
-- IN: [files/components to change]
-- OUT: [explicitly excluded]
-- Estimated files: [count]
-
-## Approach
-[How the task will be implemented. 3-5 bullet points.]
-
-## Documents to Generate
-- [FSD/SDD/PRD/ERD/DoD as applicable]
-
-## Key Decisions (pre-declared)
-- [Decision 1]: [proposed choice] — [why]
-
-## Risks
-- [Risk 1]: [mitigation]
-```
+Use the template at `templates/plan.md`: header (date, mode, size, SDLC, architecture) → Scope (IN/OUT/estimated files) → Approach (3-5 bullets) → Documents to Generate → Key Decisions (pre-declared, with why) → Risks (with mitigations).
 
 ### Approval by Mode
 
@@ -185,7 +160,18 @@ Before BUILD phase, write plan to `docs/reins/plans/current.md`:
 | **strict** | Plan written and shown. **MUST** be explicitly approved. No proceeding without "approved" / "go" / "yes". |
 | **emergency** | No plan file. Fix first. Post-fix plan retrospective. |
 
-After task completion, move plan to `docs/reins/plans/archive/{date}-{slug}.md`.
+### Plan Transparency — Always Say What Happened
+
+Whatever the mode, the user must always be told what happened with the plan — never silently create one, never silently skip one:
+
+- Plan created → announce it: `Plan written to docs/reins/plans/current.md`
+- Plan skipped → announce **why**: `No plan file — micro task (1-line change)` or `No plan file — prototype mode`
+
+Inconsistent behavior ("sometimes it makes a plan, sometimes not, and I don't know why") destroys trust in the whole pipeline. The rule is fixed: **small+ task in vibe/standard/strict → plan file, always.** Micro tasks, prototype mode, and emergency mode → no plan file, but say so.
+
+### Archive Naming — One Fixed Convention
+
+After task completion, move the plan to `docs/reins/plans/archive/{YYYY-MM-DD}-{NN}-{slug}.md` — date, then a per-day sequence number, then the kebab-case task slug (e.g. `2026-08-19-01-user-auth.md`, `2026-08-19-02-fix-logout-bug.md`). Never any other format, never left as `current.md` after the task ends.
 
 ## Pipeline Execution
 
@@ -193,16 +179,19 @@ After task completion, move plan to `docs/reins/plans/archive/{date}-{slug}.md`.
 THINK (parallel)               BUILD (sequential)            PROVE (parallel)
 ├─ elicitation ──┐             ├─ doc-generator (adaptive)   ├─ verification ──┐
 ├─ context-loader ├─ merge ──→ ├─ constraints check          ├─ adversarial    ├─ merge → REPORT
-├─ scope-guard   ─┤            ├─ change-plan                ├─ security-check ┘
+├─ scope-guard   ─┤            ├─ change-plan                ├─ security-check ┤      + JUDGMENT
 ├─ complexity    ─┤            ├─ anti-pattern check          ├─ performance   ─┘
 ├─ sdlc-detector ─┤            ├─ execution (code)
 └─ arch-analyzer ─┘            └─ model-router (advisory)
 ```
 
+**Mandatory documentation rule**: every change request that reaches BUILD gets *something* written down — at minimum the plan file, plus whatever docs the task type triggers (see `skills/build/doc-generator/`). Elicitation questions that were asked and answered MUST result in a written spec/DoD before code — asking the user five questions and then writing nothing is a broken contract. If a doc is skipped, name the reason (task size, mode) in the output.
+
 **For `large` tasks**: run `skills/build/ticket-decomposition/SKILL.md` before BUILD — split into vertical-slice tickets with blocking edges, then run THINK→BUILD→PROVE per ticket, working the frontier (unblocked tickets first).
 
 After pipeline:
 - Generate verification report (`skills/prove/report/`)
+- Run the judgment gate (`skills/prove/judgment/`) — weakest point, hallucination-risk zones, security escalation, comprehension check
 - Generate comprehension aid (`skills/meta/comprehension/`)
 - Log decisions gated by rule-of-three (`skills/meta/decision-log/`)
 - Update glossary if new domain terms surfaced (`skills/meta/glossary/`)
@@ -246,9 +235,18 @@ When single-agent only (OpenCode, Cursor): run sequentially, use sub-agent patte
 ## Priority Rules
 
 1. **Project rules override Reins defaults.** CLAUDE.md, AGENTS.md, project config always win.
-2. **User overrides override constraints.** If user says "I want X", log the override and proceed.
+2. **Never refuse a user override — inform, then comply.** When the user insists on something Reins would advise against, the response is always the same three steps: (a) state the specific risk plainly and concretely (not vague "this might cause issues" — what breaks, when, how badly), (b) if the user accepts the risk, proceed without further pushback or repeated warnings, (c) log the override (decision log if it passes rule-of-three). Refusing outright, silently complying without stating risk, and nagging after acceptance are all wrong.
 3. **Emergency overrides everything.** In emergency mode, fix first, process later.
 4. **Non-coding tasks: step back.** If task is not software (writing, research, analysis), skip Reins pipeline entirely. Pure brainstorming/discussion with no execution intent also skips Reins — that's normal conversation, not a grill session. Grill only activates on explicit request or when a consequential decision is about to lock in via an execution signal.
+
+## Session Persistence — Stay Active Once Activated
+
+Once Reins activates in a session (via the orchestrator, any `/reins:*` command, or auto-detection of a coding task), **it stays active for every subsequent coding task in that session**. The user must never have to re-mention Reins or re-invoke a skill for the pipeline to keep applying — losing the framework mid-session and silently reverting to unguarded behavior is a failure mode, not a feature.
+
+Concretely:
+- Detected context (mode, domain, SDLC, architecture) carries forward between tasks — re-detect only when the project or an explicit signal changes, not on every prompt.
+- Answers the user already gave (via elicitation or grill) are remembered for the session and in `docs/reins/memory.md` — never re-ask.
+- If the user says "stop using reins" / "reins off", deactivate for the session and confirm. That's the only off-switch — context length or topic drift is not.
 
 ## Adaptive Behavior
 

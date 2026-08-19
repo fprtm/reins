@@ -8,7 +8,7 @@ Reins controls AI coding agents through three phases:
 
 **THINK** (before coding): Clarify requirements, load context, define scope, detect complexity, detect SDLC methodology, analyze architecture, offer Reins Grill for casual decisions before they lock in.
 **BUILD** (during coding): Decompose large tasks into vertical-slice tickets, generate docs (FSD/SDD/PRD/ERD/DoD), apply constraints, enforce change plan, detect anti-patterns, guard execution.
-**PROVE** (after coding): Verify correctness, test adversarially, check security and performance, report with blind spots.
+**PROVE** (after coding): Verify correctness, test adversarially, check security and performance, report with blind spots, then run the judgment gate — weakest point named, hallucination-risk zones flagged, comprehension confirmed before the task closes.
 
 ## Modes
 
@@ -67,7 +67,7 @@ All Reins skills are in the `skills/` directory, organized by phase:
 - `skills/orchestrator/` — main entry point
 - `skills/think/` — elicitation, context-loader, scope-guard, complexity-analyzer, sdlc-detector, arch-analyzer, grill
 - `skills/build/` — constraints, anti-patterns, change-plan, execution-guard, model-router, doc-generator, ticket-decomposition
-- `skills/prove/` — verification, adversarial, security-check, performance-check, report
+- `skills/prove/` — verification, adversarial, security-check, performance-check, report, judgment
 - `skills/meta/` — decision-log, comprehension, insight, health-check, memory, stats, glossary
 - `skills/modes/` — prototype, vibe, standard, strict, emergency
 - `skills/constraints/` — universal, web, cli, mobile, library, api
