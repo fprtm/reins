@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-VERSION="0.3.0"
+VERSION="0.4.0"
 SCRIPT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 SKILLS_DIR="$SCRIPT_DIR/skills"
 

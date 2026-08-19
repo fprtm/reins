@@ -6,17 +6,20 @@ Generate living project documents adaptively based on task type, domain, and wha
 
 Reins auto-determines which documents to generate. User can always skip or add.
 
+**The DoD floor**: every task of size `small` or above gets a DoD, no matter what. A short task gets a short spec — three lines is fine — but a checklist defining "done" always exists. Only `micro` tasks (typo, rename, 1-liner) are exempt. Without a DoD, "done" is whatever the agent felt like stopping at.
+
 | Task Type | Documents Generated |
 |-----------|-------------------|
 | **New feature** | FSD (Functional Spec) + DoD |
 | **Architecture change** | SDD (Software Design Doc) + DoD |
 | **Product-facing feature** | PRD (Product Requirements) + FSD + DoD |
 | **Database changes** | ERD (Entity Relationship Diagram) + SDD + DoD |
-| **API endpoint** | FSD + API contract |
-| **Bug fix** | Report only (no docs) |
-| **Refactor** | SDD (if architectural) or Report only |
+| **API endpoint** | FSD + API contract + DoD |
+| **Bug fix** | Minimal spec (3-5 lines: symptom, root cause, fix approach) + DoD |
+| **Refactor** | SDD (if architectural) or minimal spec + DoD |
 | **Migration** | SDD + Migration plan + DoD |
-| **New project** | PRD + SDD + ERD (if DB) + FSD |
+| **New project** | PRD + SDD + ERD (if DB) + FSD + DoD |
+| **Micro task** (typo, rename, 1-liner) | Nothing — announce "micro task, no docs" |
 
 ### Detection Signals
 

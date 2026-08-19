@@ -68,13 +68,11 @@ EXPECTED_SKILLS=(
   "agents/orchestration/SKILL.md"
   "agents/model-strategy/SKILL.md"
   "agents/subagent-patterns/SKILL.md"
+  "commands/brainstorm/SKILL.md"
   "commands/discover/SKILL.md"
-  "commands/decompose/SKILL.md"
   "commands/design/SKILL.md"
   "commands/implement/SKILL.md"
-  "commands/verify/SKILL.md"
-  "commands/audit/SKILL.md"
-  "commands/measure/SKILL.md"
+  "commands/check/SKILL.md"
 )
 
 for skill in "${EXPECTED_SKILLS[@]}"; do
@@ -109,7 +107,7 @@ echo ""
 # --- Check 2b: Command skills have valid frontmatter ---
 echo "## Checking command skill frontmatter..."
 
-for cmd in discover decompose design implement verify audit measure; do
+for cmd in brainstorm discover design implement check; do
   file="$SKILLS_DIR/commands/$cmd/SKILL.md"
   if [ -f "$file" ]; then
     if ! head -1 "$file" | grep -q "^---$"; then

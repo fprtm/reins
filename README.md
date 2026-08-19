@@ -55,39 +55,22 @@ THINK                  BUILD                  PROVE
 
 ## Slash Commands
 
-Most of the time Reins works invisibly — the orchestrator auto-detects mode/size/domain and runs the right pipeline depth. But sometimes you want direct access to one phase without going through full auto-detection. Seven commands, one per classic SDLC phase:
+Most of the time Reins works invisibly — the orchestrator auto-detects mode/size/domain and runs the right pipeline depth. But sometimes you want direct access to one phase. Five commands, reading like the natural life of a piece of work:
 
-| Command | Phase | What it does |
-|---------|-------|---------------|
-| `/reins:discover` | Requirements | Interrogates a decision (architecture, scope, direction) before it locks in — frontier/round interview backed by Reins's own judgment engines |
-| `/reins:decompose` | Planning | Splits a large task into independently workable vertical slices with computed blocking edges |
-| `/reins:design` | Design | Adaptively runs architecture analysis and/or spec generation — whichever the task needs |
-| `/reins:implement` | Implementation | Executes an existing plan/spec/ticket with build-time guardrails active |
-| `/reins:verify` | Testing/QA | Full verification — types, tests, lint, spec conformance, adversarial tests, security, performance |
-| `/reins:audit` | Maintenance | Retroactive codebase health scan — anti-patterns, security gaps, convention drift, dependency health |
-| `/reins:measure` | *(cross-cutting)* | Surfaces Reins's accumulated impact — what's actually been caught over time |
-
-Each command is a thin, manual-only entry point (`disable-model-invocation: true`) into the underlying skill(s) — the orchestrator still auto-triggers the same skills as part of the normal pipeline. Use the commands when you want to invoke a specific phase directly; let the orchestrator run when you just want to work normally.
-
-### Usage Order
+| Command | When | What it does |
+|---------|------|---------------|
+| `/reins:brainstorm` | Idea is still fog | Open conversation + research to ripen a vague idea. No plan, no spec, no execution pressure — pipeline stays off. |
+| `/reins:discover` | Decisions forming | Interrogates a decision (architecture, scope, direction) before it locks in — frontier/round interview + council/devil's advocate, backed by Reins's judgment engines |
+| `/reins:design` | Solution shaping | Adaptively runs architecture analysis and/or spec generation — and auto-splits large work into vertical-slice tickets. Nothing to pick manually. |
+| `/reins:implement` | Time to build | Executes an existing plan/spec/ticket with build-time guardrails active |
+| `/reins:check` | Prove it | Adaptive QA: verifies a fresh change if one exists, audits the whole codebase otherwise — always ends with the Reins impact summary |
 
 ```
-/reins:discover  →  /reins:design  →  /reins:decompose  →  /reins:implement  →  /reins:verify
-   (optional)         (optional)       (optional, large        (usually auto-           (after
-                                        tasks only)             triggered)              implement)
-
-/reins:audit and /reins:measure stand alone — call anytime, unrelated to the sequence above.
+brainstorm → discover → design → implement → check
+  (fog)      (decisions)  (shape)    (build)    (prove)
 ```
 
-Most tasks don't need the whole chain. In practice:
-
-- **Small/medium task** — skip straight to `/reins:implement`, or don't call any command at all and let the orchestrator handle it.
-- **Task needing an architecture or spec decision** — `/reins:design` → `/reins:implement` → `/reins:verify`. Skip `discover` if the direction is already clear; skip `decompose` if it's not large enough to need splitting.
-- **Large or ambiguous task** — the full chain: `/reins:discover` (settle direction) → `/reins:design` (spec + architecture) → `/reins:decompose` (split into tickets) → `/reins:implement` per ticket → `/reins:verify` per ticket.
-- **`/reins:audit`** — anytime, independent of what you're currently working on. Codebase health check.
-- **`/reins:measure`** — anytime. See what Reins has actually caught.
-
-`design` and `decompose` answer different questions and are usually invoked separately rather than together: `design` decides *what the solution looks like* (architecture, spec) and is used for almost any non-trivial task; `decompose` decides *how to cut the work into pieces* and is only relevant once a task is genuinely too large for one pass.
+Each command is a thin, manual-only entry point (`disable-model-invocation: true`) into the underlying skill(s) — the orchestrator still auto-triggers the same skills as part of the normal pipeline. In practice most tasks don't need any command at all: just describe the work and the orchestrator runs the fixed sequence (ask → spec → plan → build → check) at the right depth. Reach for a command when you want to *start* at a specific phase — brainstorm a foggy idea, design without building yet, or check a codebase you didn't just change.
 
 ## Features
 

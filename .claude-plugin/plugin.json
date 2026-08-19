@@ -1,16 +1,14 @@
 {
   "name": "reins",
-  "version": "0.3.0",
-  "description": "Reins — Agent Control Framework. THINK, BUILD, PROVE. Multi-agent guardrails with SDLC awareness, architecture analysis, Reins Grill for pre-lock-in decisions, adaptive doc generation, and enforcement hooks.",
+  "version": "0.4.0",
+  "description": "Reins — Agent Control Framework. THINK, BUILD, PROVE. Multi-agent guardrails with SDLC awareness, architecture analysis, Reins Grill for pre-lock-in decisions, AI-output judgment gate, adaptive doc generation, and enforcement hooks.",
   "homepage": "https://github.com/fprtm/reins",
   "skills": [
     "./skills/orchestrator",
+    "./skills/commands/brainstorm",
     "./skills/commands/discover",
-    "./skills/commands/decompose",
     "./skills/commands/design",
     "./skills/commands/implement",
-    "./skills/commands/verify",
-    "./skills/commands/audit",
-    "./skills/commands/measure"
+    "./skills/commands/check"
   ]
 }

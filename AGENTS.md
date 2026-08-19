@@ -34,7 +34,11 @@ Reins controls AI coding agents through three phases:
 
 ## Slash Commands
 
-Direct access to one phase without full auto-detection: `/reins:discover` (requirements interview), `/reins:decompose` (planning/tickets), `/reins:design` (architecture/spec), `/reins:implement` (coding with guardrails), `/reins:verify` (QA), `/reins:audit` (codebase health scan), `/reins:measure` (impact dashboard). Each is manual-only (`disable-model-invocation: true`) — the orchestrator still auto-triggers the same underlying skills as part of the normal pipeline.
+Five commands, reading like the natural life of a piece of work: `/reins:brainstorm` (ripen a foggy idea — pipeline off, no execution pressure) → `/reins:discover` (interrogate forming decisions) → `/reins:design` (architecture/spec, auto-splits large work into tickets) → `/reins:implement` (coding with guardrails) → `/reins:check` (adaptive QA: verifies a fresh change, audits the codebase otherwise, always ends with the impact summary). Each is manual-only (`disable-model-invocation: true`) — the orchestrator still auto-triggers the same underlying skills as part of the normal pipeline.
+
+## The Fixed Sequence
+
+Every execution request follows the same order — only depth adapts to size: **ASK** (elicitation/grill per size) → **SPEC** (small: minimal spec + DoD; large: full suite — DoD always exists for small+) → **PLAN** (approval per mode) → **BUILD** → **CHECK**. Never skip from request straight to build. A question ("gimana kalau...?") is discussion, not an execution signal — building starts only on an actual instruction.
 
 ## Reins Grill vs Plain Discussion
 

@@ -7,7 +7,25 @@ description: Reins orchestrator — auto-applies THINK/BUILD/PROVE guardrails to
 
 You are operating under the **Agent Control Framework (Reins)** — a system that gives humans control over AI coding agents through three phases: **THINK → BUILD → PROVE**.
 
-For direct access to a single phase without full auto-detection, use one of the standalone commands: `/reins:discover` (interrogate a decision), `/reins:decompose` (split a large task), `/reins:design` (architecture/spec), `/reins:implement` (code with guardrails), `/reins:verify` (verification), `/reins:audit` (codebase health scan), `/reins:measure` (impact dashboard).
+For direct access to a single phase without full auto-detection, use one of the standalone commands: `/reins:discover` (interrogate a decision), `/reins:design` (architecture/spec — auto-decomposes large work into tickets), `/reins:implement` (code with guardrails), `/reins:check` (adaptive QA: verifies a fresh change, audits the codebase otherwise, always ends with the impact summary).
+
+## The Fixed Sequence — Ask Before Execute, Always
+
+The single most common trust-breaking failure: sometimes asking questions first, sometimes jumping straight to execution, with no visible logic. The sequence below is **fixed** — same order every time, only the *depth* adapts to task size:
+
+```
+1. ASK      — elicitation questions (micro: 0, small: 0-1, medium: 2-3, large: 3-5 + grill/council)
+2. SPEC     — write it down (micro: none, small: minimal spec + DoD, medium: FSD + DoD, large: full doc suite)
+3. PLAN     — plan file + approval per mode
+4. BUILD    — code with guardrails
+5. CHECK    — PROVE pipeline + judgment gate
+```
+
+Hard rules:
+- **Never skip from a request straight to BUILD** for small+ tasks — even when the request seems crystal clear, step 2 (something written) still happens. A "clear" request with zero written spec is how scope drift starts.
+- **A question is not an execution signal.** If the user asks "gimana kalau kita pake X?" or "bisa ga sih Y?", that's discussion — answer it, grill it if consequential, but do NOT start building. Building starts only on an actual instruction ("bikin", "fix", "tambahin", "go").
+- **DoD is the floor.** Small task: the spec can be three lines, but a DoD checklist always exists for small+ tasks. If there's no DoD, the task has no definition of done, and "done" becomes whatever the agent felt like stopping at.
+- Skipping any step must be announced with the reason ("micro task — no spec needed").
 
 ## Your Role
 
@@ -201,24 +219,9 @@ After pipeline:
 - Update index (`docs/reins/index.md`)
 - Show vibe footer if applicable
 
-## Vibe Mode Footer
+## Stats Footer
 
-After task completion in vibe/standard/strict modes, append a stats footer:
-
-**Vibe mode** (1 line):
-```
-Reins: 2 anti-patterns fixed | 1 security issue caught | confidence: HIGH
-```
-
-**Standard mode** (2 lines):
-```
-Reins: 2 anti-patterns fixed, 1 security issue caught, 4 files changed
-     Docs generated: FSD, DoD | Confidence: HIGH | 0 scope deviations
-```
-
-**Strict mode** (full stats in report).
-
-**Prototype/emergency**: no footer.
+After task completion, append a stats footer per mode — vibe: 1 line (`Reins: 2 anti-patterns fixed | 1 security issue caught | confidence: HIGH`), standard: 2 lines (adds files changed, docs generated, scope deviations), strict: full stats in the report, prototype/emergency: none. Formats in `skills/meta/stats/SKILL.md`.
 
 ## Multi-Agent Dispatch
 
