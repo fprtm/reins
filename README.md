@@ -1,5 +1,9 @@
 # Reins — Agent Control Framework
 
+> ## ⚠️ Superseded — this engine now lives as [sdd-pipeline v2](https://github.com/fprtm/sdd-pipeline)
+>
+> Reins v0.4.0 was transplanted wholesale into **[fprtm/sdd-pipeline](https://github.com/fprtm/sdd-pipeline)** (v2.0.0, 2026-08-19), where it gained a traceability spine, design-phase threat modeling, an honest coverage gate, and mechanical enforcement scripts. All future development happens there. This repository is archived as the engine's design history.
+
 **THINK. BUILD. PROVE.**
 
 A multi-agent framework that gives humans control over AI coding agents. Works with Claude Code, Codex, OpenCode, Cursor, and any agent that reads Markdown.
